@@ -1,0 +1,25 @@
+.toggle-button {
+  border-radius: 5px;
+  cursor: pointer;
+  outline: none;
+  padding: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 1em;
+  width: 8em;
+  text-decoration: none;
+  transition: background-color ease-in-out 1s;
+
+  &.green {
+    border: 1px solid greenyellow;
+    outline: 1px solid green;
+    background-color: lightgreen;
+  }
+
+  &.red {
+    border: 1px solid red;
+    outline: 1px solid orangered;
+    background-color: lightcoral;
+  }
+}

@@ -1,4 +1,5 @@
-@import "../components/counter";
+@import "../components/counter/counter";
+@import "../components/togglebutton/toggleButton";
 
 .app {
   display: flex;
