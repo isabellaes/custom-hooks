@@ -1,12 +1,12 @@
 import { useEffect, useState } from "react";
 import { SWPerson } from "../Types";
 
-const useFetchSWPerson = () => {
+const useFetchSWPerson = (id: string) => {
   const [person, setPerson] = useState({} as SWPerson);
 
   useEffect(() => {
     const fetchPersons = async () => {
-      const url = "https://swapi.py4e.com/api/people/1";
+      const url =  `https://swapi.py4e.com/api/people/${id}`;
 
       try {
         const response = await fetch(url);

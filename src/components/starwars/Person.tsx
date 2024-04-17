@@ -1,7 +1,7 @@
 import useFetchSWPerson from "../../hooks/useFetchSWPerson";
 
 const Person = () => {
-  const { person } = useFetchSWPerson();
+  const { person } = useFetchSWPerson("1");
   return (
     <div className="person">
       <h2>Person</h2>
