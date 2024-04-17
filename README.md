@@ -1,30 +1,119 @@
-# React + TypeScript + Vite
+# Custom hooks
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
 
-Currently, two official plugins are available:
+### useToggle
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
-
-## Expanding the ESLint configuration
-
-If you are developing a production application, we recommend updating the configuration to enable type aware lint rules:
-
-- Configure the top-level `parserOptions` property like this:
+- Toggle on/off 
+- Reset to defaultvalue
 
 ```js
-export default {
-  // other rules...
-  parserOptions: {
-    ecmaVersion: 'latest',
-    sourceType: 'module',
-    project: ['./tsconfig.json', './tsconfig.node.json'],
-    tsconfigRootDir: __dirname,
-  },
-}
+export const useToggle = (defaultValue: boolean) => {
+  const [on, setToggle] = useState<boolean>(defaultValue);
+
+  const toggle = () => {
+    if (on) {
+      setToggle(false);
+    } else {
+      setToggle(true);
+    }
+  };
+
+  const reset = () => {
+    setToggle(defaultValue);
+  };
+
+  return { on, toggle, reset };
+};
 ```
 
-- Replace `plugin:@typescript-eslint/recommended` to `plugin:@typescript-eslint/recommended-type-checked` or `plugin:@typescript-eslint/strict-type-checked`
-- Optionally add `plugin:@typescript-eslint/stylistic-type-checked`
-- Install [eslint-plugin-react](https://github.com/jsx-eslint/eslint-plugin-react) and add `plugin:react/recommended` & `plugin:react/jsx-runtime` to the `extends` list
+### useFetchSWPerson
+
+- Fetch person from SW api
+
+```js
+const useFetchSWPerson = () => {
+  const [person, setPerson] = useState({} as SWPerson);
+
+  useEffect(() => {
+    const fetchPersons = async () => {
+      const url = "https://swapi.py4e.com/api/people/1";
+
+      try {
+        const response = await fetch(url);
+        const result = await response.json();
+
+        if (!ignore) {
+          setPerson(result);
+        }
+      } catch (error) {}
+    };
+    let ignore = false;
+    fetchPersons();
+    return () => {
+      ignore = true;
+    };
+  }, []);
+
+  return { person };
+};
+export default useFetchSWPerson;
+
+```
+
+### useCounter
+
+- Increase/Decrease with custom stepvalue
+- Reset to custom startvalue
+- Set custom min/max value
+
+```js
+
+export const useCounter = (
+  startValue: number,
+  minValue: number,
+  maxValue: number,
+  stepValue: number
+) => {
+  const [count, setCount] = useState<number>(startValue);
+
+  const increaseCount = () => {
+    if (count + stepValue <= maxValue) {
+      setCount(count + stepValue);
+    }
+  };
+
+  const decreaseCount = () => {
+    if (count - stepValue >= minValue) {
+      setCount(count - stepValue);
+    }
+  };
+
+  const resetCount = () => {
+    setCount(startValue);
+  };
+
+  const setMaxValue = () => {
+    setCount(maxValue);
+  };
+
+  const setMinValue = () => {
+    setCount(minValue);
+  };
+
+  const isEven: boolean = count % 2 === 0;
+
+  return {
+    count,
+    increaseCount,
+    decreaseCount,
+    resetCount,
+    setMaxValue,
+    setMinValue,
+    isEven,
+  };
+};
+
+```
+
+
+
