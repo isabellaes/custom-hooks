@@ -1,63 +1,52 @@
 # Custom hooks
 
-
 ### useToggle
 
-- Toggle on/off 
+- Toggle on/off
 - Reset to defaultvalue
 
+Exampel
+
 ```js
-export const useToggle = (defaultValue: boolean) => {
-  const [on, setToggle] = useState<boolean>(defaultValue);
+import { useToggle } from "../../hooks/useToggle";
 
-  const toggle = () => {
-    if (on) {
-      setToggle(false);
-    } else {
-      setToggle(true);
-    }
-  };
-
-  const reset = () => {
-    setToggle(defaultValue);
-  };
-
-  return { on, toggle, reset };
+const ToggleButton = () => {
+  const { on, toggle } = useToggle(false);
+  return (
+    <button
+      onClick={() => toggle()}
+      className={on ? "green toggle-button" : "red toggle-button"}
+    >
+      Toggle me
+    </button>
+  );
 };
+
+export default ToggleButton;
 ```
 
 ### useFetchSWPerson
 
 - Fetch person from SW api
 
+Exampel
+
 ```js
-const useFetchSWPerson = () => {
-  const [person, setPerson] = useState({} as SWPerson);
+import useFetchSWPerson from "../../hooks/useFetchSWPerson";
 
-  useEffect(() => {
-    const fetchPersons = async () => {
-      const url = "https://swapi.py4e.com/api/people/1";
-
-      try {
-        const response = await fetch(url);
-        const result = await response.json();
-
-        if (!ignore) {
-          setPerson(result);
-        }
-      } catch (error) {}
-    };
-    let ignore = false;
-    fetchPersons();
-    return () => {
-      ignore = true;
-    };
-  }, []);
-
-  return { person };
+const Person = () => {
+  const { person } = useFetchSWPerson();
+  return (
+    <div className="person">
+      <h2>Person</h2>
+      {person
+        ? `Name: ${person.name}, Haircolor: ${person.hair_color}, Eyecolor: ${person.eye_color}`
+        : "Loading..."}
+    </div>
+  );
 };
-export default useFetchSWPerson;
 
+export default Person;
 ```
 
 ### useCounter
@@ -67,42 +56,22 @@ export default useFetchSWPerson;
 - Set custom min/max value
 
 ```js
+import { useCounter } from "../../hooks/useCounter";
 
-export const useCounter = (
+type CounterProps = {
   startValue: number,
   minValue: number,
   maxValue: number,
-  stepValue: number
-) => {
-  const [count, setCount] = useState<number>(startValue);
+  stepValue: number,
+};
 
-  const increaseCount = () => {
-    if (count + stepValue <= maxValue) {
-      setCount(count + stepValue);
-    }
-  };
-
-  const decreaseCount = () => {
-    if (count - stepValue >= minValue) {
-      setCount(count - stepValue);
-    }
-  };
-
-  const resetCount = () => {
-    setCount(startValue);
-  };
-
-  const setMaxValue = () => {
-    setCount(maxValue);
-  };
-
-  const setMinValue = () => {
-    setCount(minValue);
-  };
-
-  const isEven: boolean = count % 2 === 0;
-
-  return {
+const Counter = ({
+  startValue,
+  minValue,
+  maxValue,
+  stepValue,
+}: CounterProps) => {
+  const {
     count,
     increaseCount,
     decreaseCount,
@@ -110,10 +79,48 @@ export const useCounter = (
     setMaxValue,
     setMinValue,
     isEven,
-  };
+  } = useCounter(startValue, minValue, maxValue, stepValue);
+
+  return (
+    <div className="counter">
+      <p>Is even: {isEven ? "true" : "false"}</p>
+      <div className="row">
+        <button className="round" onClick={() => decreaseCount()}>
+          -
+        </button>
+        <p>{count}</p>
+        <button className="round" onClick={() => increaseCount()}>
+          +
+        </button>
+      </div>
+      <div>
+        <button onClick={() => resetCount()}>Reset</button>
+        <button onClick={() => setMinValue()}>Set min</button>
+        <button onClick={() => setMaxValue()}>Set max</button>
+      </div>
+    </div>
+  );
 };
 
+export default Counter;
 ```
 
+### useLocalStorage
 
+```js
+import { useLocalStorage } from "./hooks/useLocalStorage";
 
+function App() {
+  const { localState, handleSetState } = useLocalStorage("test", "item");
+  return (
+    <div className="app">
+      <p>{localState}</p>
+      <button onClick={() => handleSetState("test", "hejhej")}>
+        Set new state
+      </button>
+    </div>
+  );
+}
+
+export default App;
+```
